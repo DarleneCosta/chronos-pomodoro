@@ -11,7 +11,7 @@ export function Input(props: InputProps) {
       <label htmlFor={props.id} className={styles.label}>
         {props.labelText}
       </label>
-      <input type={props.type} {...props} />
+      <input type={props.type} {...props} className={styles.input} />
     </>
   );
 }
