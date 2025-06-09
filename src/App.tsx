@@ -9,6 +9,7 @@ import './styles/theme.css';
 import { Cycles } from './components/Cycles';
 import { Button } from './components/Button';
 import { PlayCircleIcon } from 'lucide-react';
+import { Footer } from './components/Footer';
 
 export function App() {
   return (
@@ -40,11 +41,15 @@ export function App() {
             <Cycles />
           </div>
           <div className='formRow'>
-            <Button >
+            <Button>
               <PlayCircleIcon />
             </Button>
           </div>
         </form>
+      </Container>
+
+      <Container>
+        <Footer />
       </Container>
     </>
   );
