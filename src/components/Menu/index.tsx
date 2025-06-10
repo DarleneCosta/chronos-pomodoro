@@ -1,11 +1,21 @@
-import { HistoryIcon, HouseIcon, SettingsIcon, SunIcon } from 'lucide-react';
+import {
+  HistoryIcon,
+  HouseIcon,
+  MoonIcon,
+  SettingsIcon,
+  Sun,
+  SunIcon,
+} from 'lucide-react';
 import styles from './styles.module.css';
 import { useEffect, useState } from 'react';
 
 type AvailableThemes = 'light' | 'dark';
 
 export function Menu() {
-  const [theme, setTheme] = useState<AvailableThemes>('dark');
+  const [theme, setTheme] = useState<AvailableThemes>(() => {
+    const savedTheme = localStorage.getItem('theme');
+    return (savedTheme as AvailableThemes) || 'dark';
+  });
 
   function handleChangeTheme(
     event: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
@@ -14,8 +24,14 @@ export function Menu() {
     setTheme(theme === 'light' ? 'dark' : 'light');
   }
 
+  const nextTheme = {
+    dark: <SunIcon />,
+    light: <MoonIcon />,
+  };
+
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
   }, [theme]);
 
   return (
@@ -26,7 +42,7 @@ export function Menu() {
         title='Ir para a página inicial'
         aria-label='Ir para a página inicial'
       >
-        <HouseIcon className={styles.menuIcon} />
+        <HouseIcon />
       </a>
 
       <a
@@ -35,7 +51,7 @@ export function Menu() {
         title='Ver histórico'
         aria-label='Ver histórico'
       >
-        <HistoryIcon className={styles.menuIcon} />
+        <HistoryIcon />
       </a>
 
       <a
@@ -44,7 +60,7 @@ export function Menu() {
         title='Ir para as configurações'
         aria-label='Ir para as configurações'
       >
-        <SettingsIcon className={styles.menuIcon} />
+        <SettingsIcon />
       </a>
 
       <a
@@ -54,7 +70,7 @@ export function Menu() {
         aria-label='Alterar o tema'
         onClick={handleChangeTheme}
       >
-        <SunIcon className={styles.menuIcon} />
+        {nextTheme[theme]}
       </a>
     </nav>
   );
