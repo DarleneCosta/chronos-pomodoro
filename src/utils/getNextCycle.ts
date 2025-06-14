@@ -1,8 +1,6 @@
-import type { TaskStateModel } from '../models/TaskStateMode';
-
-export function getNextCycle(state: TaskStateModel) {
-  if (state.currentCycle === 8 ) {
+export function getNextCycle(currentCycle: number) {
+  if (currentCycle === 8) {
     return 1;
   }
-  return state.currentCycle + 1;
+  return currentCycle + 1;
 }

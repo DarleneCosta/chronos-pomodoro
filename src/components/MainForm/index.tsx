@@ -1,4 +1,4 @@
-import { PlayCircleIcon } from 'lucide-react';
+import { PlayCircleIcon, StopCircleIcon } from 'lucide-react';
 import { useRef } from 'react';
 import { Button } from '../Button';
 import { Cycles } from '../Cycles';
@@ -15,7 +15,7 @@ export function MainForm() {
   const { state, setState } = useTaskContext();
   const taskRef = useRef<HTMLInputElement>(null); //quando usar state no input? quando precisa da informacao em tempo real ex.validacoes no momento da digitacao
 
-  const nextCycle = getNextCycle(state);
+  const nextCycle = getNextCycle(state.currentCycle);
   const nextCycleType = getNextCycleType(nextCycle);
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -44,9 +44,16 @@ export function MainForm() {
       activeTask: newTask,
       currentCycle: nextCycle,
       secondsRemaining: newTask.duration * 60,
-      formattedSecondsRemaining: formatSecondToMinutes(
-        newTask.duration * 60,
-      ),
+      formattedSecondsRemaining: formatSecondToMinutes(newTask.duration * 60),
+    }));
+  }
+
+  function handleStop() {
+    setState(prevState => ({
+      ...prevState,
+      activeTask: null,
+      secondsRemaining: 0,
+      formattedSecondsRemaining: '00:00',
     }));
   }
 
@@ -60,18 +67,32 @@ export function MainForm() {
           label='Tarefa'
           required
           ref={taskRef}
+          disabled={!!state.activeTask}
         />
       </div>
       <div className={styles.formRow}>
         <p>Próximo intervalo: {state.config[nextCycleType]} minutos</p>
       </div>
-      <div>
-        <Cycles />
-      </div>
+      {state.currentCycle > 0 && (
+        <div>
+          <Cycles />
+        </div>
+      )}
       <div className={styles.formRow}>
-        <Button>
-          <PlayCircleIcon />
-        </Button>
+        {!state.activeTask ? (
+          <Button type='submit' aria-label='Iniciar nova tarefa'>
+            <PlayCircleIcon />
+          </Button>
+        ) : (
+          <Button
+            type='button'
+            onClick={handleStop}
+            aria-label='Parar tarefa atual'
+            color='error'
+          >
+            <StopCircleIcon />
+          </Button>
+        )}
       </div>
     </form>
   );
