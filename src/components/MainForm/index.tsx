@@ -6,19 +6,19 @@ import { Input } from '../Input';
 import { useTaskContext } from '../../contexts/TaskContext/useTaskContext';
 import type { TaskModel } from '../../models/TaskModel';
 import { getNextCycle } from '../../utils/getNextCycle';
-import { formatSecondToMinutes } from '../../utils/formatSecondToMinutes';
 import { getNextCycleType } from '../../utils/getNextCycleType';
+import { TaskActionTypes } from '../../contexts/TaskContext/TaskActions';
 
 import styles from './styles.module.css';
 
 export function MainForm() {
-  const { state, setState } = useTaskContext();
+  const { state, dispatch } = useTaskContext();
   const taskRef = useRef<HTMLInputElement>(null); //quando usar state no input? quando precisa da informacao em tempo real ex.validacoes no momento da digitacao
 
   const nextCycle = getNextCycle(state.currentCycle);
   const nextCycleType = getNextCycleType(nextCycle);
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  function handleStartNewTask(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!taskRef.current) {
       return;
@@ -33,32 +33,30 @@ export function MainForm() {
       name: taskName,
       startDate: Date.now(),
       completeDate: null,
-      interruptedDate: null,
+      interruptDate: null,
       duration: state.config[nextCycleType],
       type: nextCycleType,
     };
 
-    setState(prevState => ({
-      ...prevState,
-      tasks: [...prevState.tasks, newTask],
-      activeTask: newTask,
-      currentCycle: nextCycle,
-      secondsRemaining: newTask.duration * 60,
-      formattedSecondsRemaining: formatSecondToMinutes(newTask.duration * 60),
-    }));
+    dispatch({
+      type: TaskActionTypes.START_TASK,
+      payload: newTask,
+    });
   }
 
-  function handleStop() {
-    setState(prevState => ({
-      ...prevState,
-      activeTask: null,
-      secondsRemaining: 0,
-      formattedSecondsRemaining: '00:00',
-    }));
+  function handleInterrupt(e: React.MouseEvent<HTMLButtonElement>) {
+    e.preventDefault();
+    if (!state.activeTask) {
+      return;
+    }
+    dispatch({
+      type: TaskActionTypes.INTERRUPT_TASK,
+      payload: state.activeTask,
+    });
   }
 
   return (
-    <form className={styles.form} onSubmit={handleSubmit}>
+    <form className={styles.form} onSubmit={handleStartNewTask}>
       <div className={styles.formRow}>
         <Input
           type='text'
@@ -80,15 +78,22 @@ export function MainForm() {
       )}
       <div className={styles.formRow}>
         {!state.activeTask ? (
-          <Button type='submit' aria-label='Iniciar nova tarefa'>
+          <Button
+            type='submit'
+            aria-label='Iniciar nova tarefa'
+            title='Iniciar nova tarefa'
+            key='btn-submit'
+          >
             <PlayCircleIcon />
           </Button>
         ) : (
           <Button
             type='button'
-            onClick={handleStop}
-            aria-label='Parar tarefa atual'
+            onClick={handleInterrupt}
+            aria-label='Interromper tarefa atual'
+            title='Interromper tarefa atual'
             color='error'
+            key='btn-interrupt'
           >
             <StopCircleIcon />
           </Button>
