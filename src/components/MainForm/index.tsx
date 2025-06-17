@@ -52,7 +52,6 @@ export function MainForm() {
     }
     dispatch({
       type: TaskActionTypes.INTERRUPT_TASK,
-      payload: state.activeTask,
     });
   }
 

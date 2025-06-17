@@ -22,9 +22,9 @@ export function taskReducer(
     }
     case TaskActionTypes.INTERRUPT_TASK: {
       return {
-        ...state,
+        ...state,        
         tasks: state.tasks.map(task =>
-          task.id === action.payload.id
+          state.activeTask?.id === task.id
             ? { ...task, interruptDate: Date.now() }
             : task,
         ),
@@ -35,6 +35,28 @@ export function taskReducer(
     }
     case TaskActionTypes.RESET_TASK: {
       return state;
+    }
+    case TaskActionTypes.COUNT_DOWN: {
+      return {
+        ...state,
+        secondsRemaining: action.payload.secondsRemaining,
+        formattedSecondsRemaining: formatSecondToMinutes(
+          action.payload.secondsRemaining,
+        ),
+      };
+    }
+    case TaskActionTypes.COMPLETE_TASK: {
+      return {
+        ...state,
+        tasks: state.tasks.map(task =>
+          state.activeTask?.id === task.id
+            ? { ...task, completeDate: Date.now() }
+            : task,
+        ),
+        activeTask: null,
+        secondsRemaining: 0,
+        formattedSecondsRemaining: '00:00',
+      };
     }
   }
   return state;

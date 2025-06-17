@@ -6,6 +6,7 @@ self.onmessage = event => {
   }
   isRunning = true;
   const { activeTask, secondsRemaining } = event.data;
+
   const endDate = activeTask.startDate + secondsRemaining * 1000;
   let countDownSeconds = Math.ceil((endDate - Date.now()) / 1000);
 
@@ -14,4 +15,6 @@ self.onmessage = event => {
     countDownSeconds = Math.floor((endDate - Date.now()) / 1000);
     setTimeout(tick, 1000);
   }
+
+  tick();
 };
