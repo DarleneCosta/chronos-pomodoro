@@ -1,21 +1,22 @@
 import { useEffect } from 'react';
 import { Container } from '../../components/Container';
-import { CountDown } from '../../components/CountDown';
-import { MainForm } from '../../components/MainForm';
+import { Heading } from '../../components/Heading';
 import { MainTemplate } from '../../templates/MainTemplate';
 
-export function Home() {
+export function History() {
   useEffect(() => {
-    document.title = 'Chronos Pomodoro';
+    document.title = 'Histórico de pomodoros | Chronos Pomodoro';
   }, []);
 
   return (
     <MainTemplate>
       <Container>
-        <CountDown />
+        <Heading>Histórico</Heading>
       </Container>
       <Container>
-        <MainForm />
+        <p style={{ textAlign: 'center' }}>
+          Aqui você pode ver o histórico de seus pomodoros.
+        </p>
       </Container>
     </MainTemplate>
   );

@@ -9,6 +9,7 @@ import { getNextCycle } from '../../utils/getNextCycle';
 import { getNextCycleType } from '../../utils/getNextCycleType';
 import { TaskActionTypes } from '../../contexts/TaskContext/TaskActions';
 import { Tips } from '../Tips';
+import { showMessage } from '../../adapters/showMessage';
 
 import styles from './styles.module.css';
 
@@ -21,12 +22,13 @@ export function MainForm() {
 
   function handleStartNewTask(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    showMessage.dismiss();
     if (!taskRef.current) {
       return;
     }
     const taskName = taskRef.current.value.trim();
     if (!taskName) {
-      alert('Tarefa não pode ser vazia');
+      showMessage.warn('Tarefa não pode ser vazia.');
       return;
     }
     const newTask: TaskModel = {
@@ -43,6 +45,8 @@ export function MainForm() {
       type: TaskActionTypes.START_TASK,
       payload: newTask,
     });
+
+    showMessage.success('Tarefa iniciada.');
   }
 
   function handleInterrupt(e: React.MouseEvent<HTMLButtonElement>) {
@@ -50,9 +54,11 @@ export function MainForm() {
     if (!state.activeTask) {
       return;
     }
+    showMessage.dismiss();
     dispatch({
       type: TaskActionTypes.INTERRUPT_TASK,
     });
+    showMessage.info('Tarefa interrompida.');
   }
 
   return (
