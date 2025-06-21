@@ -43,16 +43,29 @@ export function History() {
                 <th>Tipo</th>
               </tr>
             </thead>
-
             <tbody>
+              {state.tasks.length === 0 && (
+                <tr>
+                  <td colSpan={5} style={{ textAlign: 'center' }}>
+                    Nenhuma tarefa encontrada
+                  </td>
+                </tr>
+              )}
+
               {state.tasks.map((task, index) => {
+                const taskTypeDictionary = {
+                  workTime: 'Foco',
+                  shortBreakTime: 'Pausa',
+                  longBreakTime: 'Pausa longa',
+                };
+
                 return (
                   <tr key={index}>
                     <td>{task.name}</td>
                     <td>{task.duration} min</td>
                     <td>{formatDate(task.startDate)}</td>
                     <td>{getTaskStatus(task, state.activeTask)}</td>
-                    <td>{task.type}</td>
+                    <td>{taskTypeDictionary[task.type]}</td>
                   </tr>
                 );
               })}
