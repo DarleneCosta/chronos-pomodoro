@@ -4,12 +4,12 @@ import { Button } from '../Button';
 import { Cycles } from '../Cycles';
 import { Input } from '../Input';
 import { useTaskContext } from '../../contexts/TaskContext/useTaskContext';
-import type { TaskModel } from '../../models/TaskModel';
 import { getNextCycle } from '../../utils/getNextCycle';
 import { getNextCycleType } from '../../utils/getNextCycleType';
 import { TaskActionTypes } from '../../contexts/TaskContext/TaskActions';
 import { Tips } from '../Tips';
 import { showMessage } from '../../adapters/showMessage';
+import type { TaskModel } from '../../models/TaskModel';
 
 import styles from './styles.module.css';
 
