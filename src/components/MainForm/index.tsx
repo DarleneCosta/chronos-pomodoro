@@ -16,7 +16,8 @@ import styles from './styles.module.css';
 export function MainForm() {
   const { state, dispatch } = useTaskContext();
   const taskRef = useRef<HTMLInputElement>(null); //quando usar state no input? quando precisa da informacao em tempo real ex.validacoes no momento da digitacao
-
+  const lastTaskRef = state.tasks[state.tasks.length - 1]?.name
+    
   const nextCycle = getNextCycle(state.currentCycle);
   const nextCycleType = getNextCycleType(nextCycle);
 
@@ -72,6 +73,7 @@ export function MainForm() {
           required
           ref={taskRef}
           disabled={!!state.activeTask}
+          defaultValue={lastTaskRef}
         />
       </div>
       <div className={styles.formRow}>
