@@ -7,9 +7,10 @@ import { MainTemplate } from '../../templates/MainTemplate';
 import { useTaskContext } from '../../contexts/TaskContext/useTaskContext';
 import { formatDate } from '../../utils/formatDate';
 import { getTaskStatus } from '../../utils/getTaskStatus';
-import { type SortTasksOptions, sortTasks } from '../../utils/sortTasks';
-import styles from './styles.module.css';
+import { type SortTasksOptions, sortTasks } from '../../utils/sortTasks'
+import { showMessage } from '../../adapters/showMessage';
 import { TaskActionTypes } from '../../contexts/TaskContext/TaskActions';
+import styles from './styles.module.css';
 
 export function History() {
   const { state, dispatch } = useTaskContext();
@@ -41,11 +42,12 @@ export function History() {
   }
 
   function handleDeleteAllTasks() {
-    if (!confirm('Tem certeza que deseja apagar todo o histórico?')) {
-      return;
-    }
-
-    dispatch({ type: TaskActionTypes.RESET_TASK });
+    showMessage.dismiss();
+    showMessage.confirm('Tem certeza que deseja apagar todo o histórico?', (confirmed) => {
+      if (confirmed) {
+        dispatch({ type: TaskActionTypes.RESET_TASK });
+      }
+    });
   }
 
   useEffect(() => {
