@@ -14,7 +14,6 @@ import styles from './styles.module.css';
 
 export function History() {
   const { state, dispatch } = useTaskContext();
-  const [confirmClearHistory, setConfirmClearHistory] = useState(false);
   const hasTasks = state.tasks.length > 0;
   const [sortTaskOptions, setSortTaskOptions] = useState<SortTasksOptions>(() => ({
     tasks: sortTasks({ tasks: state.tasks }),
@@ -34,11 +33,10 @@ export function History() {
   }, [state.tasks]);
 
   useEffect(() => {
-    if (confirmClearHistory) {
-      dispatch({ type: TaskActionTypes.RESET_TASK });
-      setConfirmClearHistory(false);
-    }
-  }, [confirmClearHistory, dispatch]);
+    return () => {
+      showMessage.dismiss();
+    };
+  }, []);
 
   function handleSortTasks({ field }: Pick<SortTasksOptions, 'field'>) {
     const newDirection = sortTaskOptions.direction === 'asc' ? 'desc' : 'asc';
@@ -52,7 +50,9 @@ export function History() {
   function handleDeleteAllTasks() {
     showMessage.dismiss();
     showMessage.confirm('Tem certeza que deseja apagar todo o histórico?', (confirmed) => {
-      setConfirmClearHistory(confirmed);
+      if (confirmed) {
+        dispatch({ type: TaskActionTypes.RESET_TASK });
+      }
     });
   }
 
